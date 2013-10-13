@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Anti-Rumor on Sina Micro-Blog</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <style type="text/css">
+        #tbUrl {
+            width: 403px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function onUrlSubmit()
+        {
+            var urlVal = $("#tbUrl").val();
+            $.post("Detect.ashx", { url: urlVal }, function (data) {
+                if(data == "200")
+                {
+
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <form>
+        <input type="text" id="tbUrl" />
+        <br />
+        <input type="button" id="btnSubmit" value="Submit" onclick="onUrlSubmit();"/>
+    </form>
+</body>
+</html>
