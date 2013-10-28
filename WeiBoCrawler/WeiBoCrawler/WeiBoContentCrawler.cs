@@ -21,7 +21,10 @@ namespace WeiBoCrawler
         CookieCollection cookies;
         Uri proxyUri;
         HttpRequest request;
+        List<WeiBoCommentCrawler> commentCrawlerList;
         Random rnd = new Random();
+
+        public List<WeiBoCommentCrawler> CommentCrawlerList { set { this.commentCrawlerList = value; } }
 
         public WeiBoContentCrawler(ConcurrentQueue<string> urlQueue, ConcurrentQueue<CommentCrawlJob> commentCrawQueue, CookieCollection cookies, Uri proxyUri)
         {
@@ -89,6 +92,13 @@ namespace WeiBoCrawler
                         commentCrawQueue.Enqueue(
                             new CommentCrawlJob() { BeginPage = i, EndPage = i + 4 > comPageNum ? comPageNum : i + 4, Url = pageUrl }
                         );
+
+                    for (int i = 0; i < commentCrawlerList.Count; i++)
+                    {
+                        commentCrawQueue.Enqueue(
+                            new CommentCrawlJob() { Url = "$END$" }
+                            );
+                    }
                 }
             }
             catch (Exception ex)

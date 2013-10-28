@@ -12,6 +12,8 @@ using System.Xml.Linq;
 using MySql.Data.MySqlClient;
 using MySql.Data;
 using System.Messaging;
+using System.ServiceModel;
+using System.ServiceModel.Description;
 
 namespace WeiBoCrawler
 {
@@ -53,6 +55,33 @@ namespace WeiBoCrawler
                 }
             }
 
+            foreach (var c in contentCrawlerList)
+            {
+                c.CommentCrawlerList = commentCrawlerList;
+            }
+
+            Uri baseAddress = new Uri("http://localhost:6525/ContentCrawl");
+
+            ContentCrawlService service = new ContentCrawlService(contentCrawlerList,commentCrawlerList);
+
+            using (ServiceHost host = new ServiceHost(service, baseAddress))
+            {
+                ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+                smb.HttpGetEnabled = true;
+                smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
+                host.Description.Behaviors.Add(smb);
+                var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+                behavior.InstanceContextMode = InstanceContextMode.Single;
+
+                host.Open();
+
+                Console.WriteLine("The ContentCrawl Service is ready at: {0}", baseAddress);
+                Console.WriteLine("Press <Enter> to stop the service");
+                Console.ReadKey();
+                host.Close();
+            }
+
+/*
             InitQueue();
             string[] data;
             while (true)
@@ -80,7 +109,7 @@ namespace WeiBoCrawler
 
                 string senddata = String.Format("{0}|{1}|{2}|{3}|{4}", sent, WeiBoManager.HasImg ? "1" : "0", WeiBoManager.HasUrl ? "1" : "0", comval, WeiBoManager.GetContent());
                 Send(senddata);
-            }
+            }*/
 
         }
 

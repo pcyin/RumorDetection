@@ -38,12 +38,11 @@ namespace WeiBoCrawler
             CommentCrawlJob job = null;
             while (true)
             {
-                while (!commentCrawQueue.TryDequeue(out job)) {
-                    if (!commentCrawQueue.TryDequeue(out job))
-                        return;
-                    else
-                        break;
-                }
+                while (!commentCrawQueue.TryDequeue(out job))
+                    ;
+
+                if (job.Url == "$END$")
+                    break;
 
                 for (int pageId = job.BeginPage; pageId <= job.EndPage; pageId++)
                 {
