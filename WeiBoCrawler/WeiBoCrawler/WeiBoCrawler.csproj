@@ -61,6 +61,8 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Messaging" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -70,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommentCrawlJob.cs" />
+    <Compile Include="ContentCrawlService.cs" />
     <Compile Include="SenRequest.cs" />
     <Compile Include="WeiBoManager.cs" />
     <Compile Include="ConfigManager.cs" />

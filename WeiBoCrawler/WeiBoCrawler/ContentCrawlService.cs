@@ -16,7 +16,7 @@ namespace WeiBoCrawler
     }
 
     [DataContract]
-    class ContentCrawlResult
+    public class ContentCrawlResult
     {
         [DataMember]
         public int Sentiment { get; set; }
