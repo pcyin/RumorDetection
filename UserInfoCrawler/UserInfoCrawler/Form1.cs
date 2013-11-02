@@ -14,6 +14,8 @@ using System.Collections.Concurrent;
 using System.Data.SqlClient;
 using System.IO;
 using System.Messaging;
+using System.ServiceModel;
+using System.ServiceModel.Description;
 
 namespace Browser
 {
@@ -22,6 +24,8 @@ namespace Browser
     {
         ConcurrentQueue<string> uidQueue;
         Thread listeningThread;
+        ServiceHost host;
+
         public Form1()
         {
             InitializeComponent();
@@ -39,50 +43,38 @@ namespace Browser
 
             listeningThread = new Thread(() =>
             {
-                while (true)
+                Uri baseAddress = new Uri("http://localhost:6526/UserInfoService");
+
+                UserInfoService service = new UserInfoService(browser, tbLog);
+
+                host = new ServiceHost(service, baseAddress);
+
+                ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+                smb.HttpGetEnabled = true;
+                smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
+                host.Description.Behaviors.Add(smb);
+                var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+                behavior.InstanceContextMode = InstanceContextMode.Single;
+
+                try
                 {
-                    try
-                    {
-                        System.Messaging.Message msg = msmq.Receive();
-                        userName = Convert.ToString(msg.Body);
-                        browser.Navigate("http://weibo.com/" + userName + "/info");
-
-                        Thread.Sleep(2000);
-                        int count = 0;
-
-                        while (!(bool)
-                            browser.Invoke((Func<bool>)(() =>
-                            {
-                                return getUserInfo(browser);
-                            }))
-                        )
-                        {
-                            tbLog.Invoke((Action)(() =>
-                            {
-                                tbLog.Text += "Try again" + "\r\n";
-                            }));
-                            Thread.Sleep(2000);
-                        }
-
-                    }
-                    catch (ThreadAbortException ex)
-                    {
-                        tbLog.Invoke((Action)(() =>
-                        {
-                            tbLog.Text += ex.Message + "\n";
-                        }));
-                        break;
-                    }
+                    host.Open();
                 }
+                catch (ThreadAbortException ex)
+                {
+                    tbLog.Invoke((Action)(() =>
+                    {
+                        tbLog.Text += ex.Message + "\n";
+                    }));
+                }                    
+                
 
             });
 
             listeningThread.Start();
             button1.Enabled = false;
             button2.Enabled = true;
-        }
-
-        
+        } 
 
         bool getUserInfo(WebBrowser browser)
         {
@@ -268,6 +260,18 @@ namespace Browser
             listeningThread.Abort();
             button1.Enabled = true;
             button2.Enabled = false;
+
+            try
+            {
+                host.Close();
+            }
+            catch (System.Exception ex)
+            {
+                tbLog.Invoke((Action)(() =>
+                {
+                    tbLog.Text += ex.Message + "\n";
+                }));
+            }
         }
 
         private void OnExiting(object sender, FormClosingEventArgs e)

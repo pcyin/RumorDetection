@@ -11,6 +11,7 @@ using System.Messaging;
 using System.IO;
 using NewsWeiboSim;
 
+
 namespace WeiBoJudgeConsole
 {
     public partial class Form1 : Form
@@ -46,6 +47,12 @@ namespace WeiBoJudgeConsole
         private void button1_Click(object sender, EventArgs e)
         {
             string[] temp = textBox1.Text.Split('/');
+
+            //ContentCrawlServiceClient contentClient = new ContentCrawlServiceClient();
+            UserInfoServiceClient infoClient = new UserInfoServiceClient();
+            //var result = contentClient.GetContentCrawlResult(temp[3] + '|' + temp[4]);
+            var userInfo = infoClient.GetUserInfo(temp[3]);
+
             Send(usermsmq,temp[3]);
             Send(weibomsmq,temp[3] + '|' + temp[4]);
 
