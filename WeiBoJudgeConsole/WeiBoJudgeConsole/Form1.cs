@@ -48,34 +48,22 @@ namespace WeiBoJudgeConsole
         {
             string[] temp = textBox1.Text.Split('/');
 
-            //ContentCrawlServiceClient contentClient = new ContentCrawlServiceClient();
+            ContentCrawlServiceClient contentClient = new ContentCrawlServiceClient();
             UserInfoServiceClient infoClient = new UserInfoServiceClient();
-            //var result = contentClient.GetContentCrawlResult(temp[3] + '|' + temp[4]);
+            var contentInfo = contentClient.GetContentCrawlResult(temp[3] + '|' + temp[4]);
             var userInfo = infoClient.GetUserInfo(temp[3]);
 
-            Send(usermsmq,temp[3]);
-            Send(weibomsmq,temp[3] + '|' + temp[4]);
-
-            System.Messaging.Message wcmsg = weiboCallBackQueue.Receive();
-            System.Messaging.Message ucmsg = userCallBackQueue.Receive();
-            string weiboData = Convert.ToString(wcmsg.Body);
-            string userData = Convert.ToString(ucmsg.Body);
-            //MessageBox.Show(weiboData);
-            //MessageBox.Show(userData);
-            string[] weiboDataList = weiboData.Split('|');
-            string[] userDataList = userData.Split('|');
             StringBuilder sb = new StringBuilder();
-            sb.Append("1:").Append(weiboDataList[0]).Append(" ");
-            sb.Append("2:").Append(weiboDataList[1]).Append(" ");
-            sb.Append("3:").Append(weiboDataList[2]).Append(" ");
-            sb.Append("4:").Append(userDataList[0]).Append(" ");
-            sb.Append("5:").Append(userDataList[1]).Append(" ");
-            sb.Append("6:").Append(userDataList[2]).Append(" ");
-            sb.Append("7:").Append(getLocVal(userDataList[3])).Append(" ");
-            sb.Append("8:").Append(userDataList[4]).Append(" ");
-            sb.Append("9:").Append(userDataList[5]).Append(" ");
-            sb.Append("10:").Append(weiboDataList[3]).Append(" ");
-            //MessageBox.Show(sb.ToString());
+            sb.Append("1:").Append(contentInfo.Sentiment).Append(" ");   //sentiment
+            sb.Append("2:").Append(contentInfo.HasImg ? "1" : "0").Append(" ");   //HasImg ? "1" : "0"
+            sb.Append("3:").Append(contentInfo.HasUrl ? "1" : "0").Append(" ");   //HasUrl ? "1" : "0"
+            sb.Append("4:").Append(userInfo.FanNum).Append(" ");    //fans
+            sb.Append("5:").Append(userInfo.WeiboNum).Append(" ");    //weibo
+            sb.Append("6:").Append(userInfo.Credit).Append(" ");    //credit
+            sb.Append("7:").Append(getLocVal(userInfo.Location)).Append(" "); //userLoc
+            sb.Append("8:").Append(userInfo.Level).Append(" ");    //level
+            sb.Append("9:").Append(userInfo.IsVerified).Append(" ");    //verified
+            sb.Append("10:").Append(contentInfo.CommentEval).Append(" ");  //comval
             vector.Text = sb.ToString();
             /*List<string> newsList = sim.BiggestFiveTitle(weiboDataList[4]);
             foreach(string str in newsList)
