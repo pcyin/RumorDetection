@@ -42,6 +42,8 @@
     <Reference Include="System.Messaging">
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -69,6 +71,7 @@
   <ItemGroup>
     <Compile Include="App_Code\SVM.cs" />
     <Compile Include="App_Code\WorkerThread.cs" />
+    <Compile Include="ContentCrawlService.cs" />
     <Compile Include="Detect.ashx.cs">
       <DependentUpon>Detect.ashx</DependentUpon>
     </Compile>
@@ -79,6 +82,8 @@
     <Compile Include="Result.ashx.cs">
       <DependentUpon>Result.ashx</DependentUpon>
     </Compile>
+    <Compile Include="ServiceHelper.cs" />
+    <Compile Include="UserInfoService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Detect.ashx" />

@@ -22,7 +22,25 @@
             var urlVal = $("#tbUrl").val();
             $.post("Detect.ashx", { url: urlVal }, function (data) {
                 if (data == "200") {
-
+                    var info = data.split("|");
+                    $("#name").html(info[0]);
+                    $("#uid").html(info[1]);
+                    $("#sex").html(info[2]);
+                    $("#level").html(info[3]);
+                    $("#verified").html(info[4]);
+                    $("#credit").html(info[5]);
+                    $("#followNum").html(info[6]);
+                    $("#fanNum").html(info[7]);
+                    $("#weiboNum").html(info[8]);
+                    $("#nickName").html(info[9]);
+                    $("#location").html(info[10]);
+                    $("#intro").html(info[11]);
+                    $("#content").html(info[12]);
+                    $("#commentEhtml").html(info[13]);
+                    $("#hasImg").html(info[14]);
+                    $("#sentiment").html(info[15]);
+                    $("#hasUrl").html(info[16]);
+                    $("#result").html(info[17]);
                 }
             });
         }
@@ -63,14 +81,61 @@
                 </div>
             </div>
 
-            <div class="col-md-9">
-                <h2>Analysis Result</h2>
+            <div class="col-md-10">
+                <h2>Analysis Result: <span id="result">Truth!</span></h2>
                 <table class="table">
                     <tr>
                         <td>User Name:</td>
-                        <td>User Name</td>
+                        <td id="name">User Name</td>
+                        <td>User Id:</td>
+                        <td id="uid">User Id</td>
                         <td>Sex:</td>
-                        <td>Sex</td>
+                        <td id="sex">Sex</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Level:</td>
+                        <td id="level">Level</td>
+                        <td>Verified:</td>
+                        <td id="verified">Verified</td>
+                        <td>Credits:</td>
+                        <td id="credit">Credits</td>
+                    </tr>
+                    <tr>
+                        <td>Following Number:</td>
+                        <td id="followNum">Following Number</td>
+                        <td>Follower Number:</td>
+                        <td id="fanNum">Follower Number</td>
+                        <td>Weibo Number:</td>
+                        <td id="weiboNum">Weibo Number</td>
+                    </tr>
+                    <tr>
+                        <td>NickName:</td>
+                        <td id="nickName">NickName</td>
+                        <td>Location:</td>
+                        <td id="location">Location</td>
+                        <td>Intro:</td>
+                        <td id="intro">Intro</td>
+                    </tr>
+                    <tr>
+                        <td>Content:</td>
+                        <td id="content">Content</td>
+                    </tr>
+                    <tr>
+                        <td>Comment Score:</td>
+                        <td id="commentEval">Content</td>
+                    </tr>
+                    <tr>
+                        <td>Has Image:</td>
+                        <td id="hasImg">Content</td>
+                    </tr>
+                    <tr>
+                        <td>Sentiment Classification:</td>
+                        <td id="sentiment"></td>
+                    </tr>
+                    <tr>
+                        <td>Has Url link?</td>
+                        <td id="hasUrl">Content</td>
                     </tr>
                 </table>
             </div>

@@ -14,7 +14,7 @@ namespace SVMWrapper
         public static string SVMPath = "model/";
         public static string PredictFilePath = "";
 
-        public void InputData(string data)
+        public static void InputData(string data)
         {
             using(StreamWriter sw = new StreamWriter(Path.Combine(HttpRuntime.AppDomainAppPath,"model","predict.txt")))
             {
@@ -22,7 +22,7 @@ namespace SVMWrapper
             }
         }
 
-        public int Predict()
+        public static int Predict( )
         {
             // Start the child process.
             Process p = new Process();
@@ -46,5 +46,7 @@ namespace SVMWrapper
 
             return result;
         }
+
+        
     }
 }

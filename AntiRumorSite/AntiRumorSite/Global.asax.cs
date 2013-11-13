@@ -18,9 +18,9 @@ namespace AntiRumorSite
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            new Thread(() => {
-                new WorkerThread().Run();
-            }).Start();
+            //new Thread(() => {
+            //    new WorkerThread().Run();
+            //}).Start();
         }
 
         protected void Session_Start(object sender, EventArgs e)
