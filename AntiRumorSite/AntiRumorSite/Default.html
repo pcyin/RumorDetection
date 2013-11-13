@@ -2,10 +2,44 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Anti-Rumor on Sina Micro-Blog</title>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script lang="javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.min.js"></script>
     <style type="text/css">
         #tbUrl {
-            width: 403px;
+            width: 500px;
+            height: 34px;
+            padding: 2px;
+            line-height: 1.428571429;
+            color: #555;
+            font-size: 22px;
+            vertical-align: middle;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+        }
+        .box{
+            border: 1px solid #d3d3d3;
+            border-radius: 6px;
+            background-color: #eee;
+            width:700px;
+            margin:0 auto;
+            padding:10px;
+        }
+        .btn{
+            height: 36px;
+            width: 100px;
+            margin-left: 20px;
+            color: #fff;
+            background-color: #3276b1;
+            border-color: #285e8e;
+            border: 1px solid transparent;
+            padding: 6px 12px;
+        }
+        body{
+            font: 12pt Alegreya,georgia,Verdana,Geneva,'DejaVu Sans',sans-serif;
+        }
+        form{
         }
     </style>
 
@@ -16,17 +50,22 @@
             $.post("Detect.ashx", { url: urlVal }, function (data) {
                 if(data == "200")
                 {
-
+                    
                 }
             });
         }
+        
     </script>
 </head>
 <body>
-    <form>
-        <input type="text" id="tbUrl" />
-        <br />
-        <input type="button" id="btnSubmit" value="Submit" onclick="onUrlSubmit();"/>
-    </form>
+    <div class="box">
+        <h2>Submit Url</h2>
+        <form>
+            <input type="text" id="tbUrl" />
+            <input type="button" id="btnSubmit" class="btn" value="Submit" onclick="onUrlSubmit();"/>
+        </form>
+        <h2>Queued Requests</h2>
+        <h2>Analysis Result</h2>
+    </div>
 </body>
 </html>
