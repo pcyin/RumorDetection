@@ -73,6 +73,8 @@ namespace WeiBoCrawler
             result.HasUrl = WeiBoManager.HasUrl;
             result.Content = WeiBoManager.GetContent();
 
+            Console.WriteLine("Finished!");
+
             return result;
         }
     }

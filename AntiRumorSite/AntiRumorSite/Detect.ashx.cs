@@ -24,11 +24,11 @@ namespace AntiRumorSite
             UserInfo uinfo = new UserInfo();
             ContentCrawlResult cinfo = new ContentCrawlResult();
 
-            //ServiceHelper.GetServiceInfo(url, out cinfo, out uinfo);
-            //var vec = ServiceHelper.GetFeatureVector(cinfo, uinfo);
-            //SVM.InputData(vec);
-            //var result = SVM.Predict();
-            var result = 1;
+            ServiceHelper.GetServiceInfo(url, out cinfo, out uinfo);
+            var vec = ServiceHelper.GetFeatureVector(cinfo, uinfo);
+            SVM.InputData(vec);
+            var result = SVM.Predict();
+            //var result = 1;
 
             var data = String.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10}|{11}|{12}|{13}|{14}|{15}|{16}|{17}",
                 uinfo.Uid,
@@ -48,7 +48,7 @@ namespace AntiRumorSite
                 cinfo.HasImg,
                 cinfo.Sentiment,
                 cinfo.HasUrl,
-                result);
+                result == 1 ? "Rumor!" : "Truth!");
 
             context.Response.Write(data);
         }

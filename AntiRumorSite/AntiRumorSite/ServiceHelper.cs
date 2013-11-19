@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using WeiBoCrawler;
 using Browser;
+using System.Threading.Tasks;
 
 namespace AntiRumorSite
 {
@@ -48,7 +49,7 @@ namespace AntiRumorSite
             sb.Append("6:").Append(userInfo.Credit).Append(" ");    //credit
             sb.Append("7:").Append(GetProvinceId(userInfo.Location)).Append(" "); //userLoc
             sb.Append("8:").Append(userInfo.Level).Append(" ");    //level
-            sb.Append("9:").Append(userInfo.IsVerified).Append(" ");    //verified
+            sb.Append("9:").Append(userInfo.IsVerified ? "1" : "0").Append(" ");    //verified
             sb.Append("10:").Append(contentInfo.CommentEval).Append(" ");  //comval 
             return sb.ToString();
         }
@@ -59,8 +60,15 @@ namespace AntiRumorSite
 
             ContentCrawlServiceClient contentClient = new ContentCrawlServiceClient();
             UserInfoServiceClient infoClient = new UserInfoServiceClient();
-            contentInfo = contentClient.GetContentCrawlResult(temp[3] + '|' + temp[4]);
-            userInfo = infoClient.GetUserInfo(temp[3]);
+            var contentTask = Task.Factory.StartNew<ContentCrawlResult>(() => {
+                return contentClient.GetContentCrawlResult(temp[3] + '|' + temp[4]);
+            });
+            var userTask = Task.Factory.StartNew<UserInfo>(() => {
+                return infoClient.GetUserInfo(temp[3]);
+            });
+
+            contentInfo = contentTask.Result;//contentClient.GetContentCrawlResult(temp[3] + '|' + temp[4]);
+            userInfo = userTask.Result; //infoClient.GetUserInfo(temp[3]);
         }
     }
 }

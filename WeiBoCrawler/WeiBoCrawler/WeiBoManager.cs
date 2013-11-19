@@ -65,8 +65,8 @@ namespace WeiBoCrawler
 
         public static int CalcSent()
         {
-            body = SenRequest.GetHttpResponseStr("http://localhost:8080/clean/" + System.Web.HttpUtility.UrlEncode(body));
-            return Convert.ToInt32(SenRequest.GetHttpResponseStr("http://localhost:8080/sentiment/" + System.Web.HttpUtility.UrlEncode(body)));
+            body = SenRequest.GetHttpResponseStr("http://218.241.236.92:8080/clean/" + System.Web.HttpUtility.UrlEncode(body));
+            return Convert.ToInt32(SenRequest.GetHttpResponseStr("http://218.241.236.92:8080/sentiment/" + System.Web.HttpUtility.UrlEncode(body)));
         }
 
         public static string GetContent() 

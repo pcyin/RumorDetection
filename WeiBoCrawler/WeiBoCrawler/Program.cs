@@ -60,6 +60,8 @@ namespace WeiBoCrawler
                 c.CommentCrawlerList = commentCrawlerList;
             }
 
+            WeiBoManager.Init();
+
             Uri baseAddress = new Uri("http://localhost:6525/ContentCrawl");
 
             ContentCrawlService service = new ContentCrawlService(contentCrawlerList,commentCrawlerList);
@@ -81,62 +83,6 @@ namespace WeiBoCrawler
                 host.Close();
             }
 
-/*
-            InitQueue();
-            string[] data;
-            while (true)
-            {
-                Message msg = msmq.Receive();
-                data = Convert.ToString(msg.Body).Split('|');
-
-                string weiboUrl = "http://weibo.com/" + data[0] + "/" + data[1];
-                WeiBoManager.commentList.Clear();
-                contentCrawlerList[0].Run(weiboUrl);
-
-                Thread[] commentThreadList = new Thread[commentCrawlerList.Count];
-                int i = 0;
-                foreach (WeiBoCommentCrawler c in commentCrawlerList)
-                {
-                    Thread t = new Thread(c.Run);
-                    commentThreadList[i++] = t;
-                    t.Start();
-                }
-                foreach (Thread t in commentThreadList)
-                    t.Join();
-
-                int sent = WeiBoManager.CalcSent();
-                double comval = WeiBoManager.CalcComment();
-
-                string senddata = String.Format("{0}|{1}|{2}|{3}|{4}", sent, WeiBoManager.HasImg ? "1" : "0", WeiBoManager.HasUrl ? "1" : "0", comval, WeiBoManager.GetContent());
-                Send(senddata);
-            }*/
-
-        }
-
-        static void Send(string data)
-        {
-            callBackQueue.Send(new System.Messaging.Message(data, new BinaryMessageFormatter()));
-        }
-
-        static MessageQueue msmq;
-        static MessageQueue callBackQueue;
-
-        static void InitQueue()
-        {
-            if (!MessageQueue.Exists(@".\private$\WeiBoCrawl"))
-            {
-                MessageQueue.Create(@".\private$\WeiBoCrawl");
-               
-            }
-            msmq = new MessageQueue(@".\private$\WeiBoCrawl");
-            msmq.Formatter = new BinaryMessageFormatter();
-            if (!MessageQueue.Exists(@".\private$\WeiBoCrawlBack"))
-            {
-                MessageQueue.Create(@".\private$\WeiBoCrawlBack");
-                
-            }
-            callBackQueue = new MessageQueue(@".\private$\WeiBoCrawlBack");
-            callBackQueue.Formatter = new BinaryMessageFormatter();
         }
     }
 }

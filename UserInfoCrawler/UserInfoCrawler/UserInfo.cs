@@ -65,8 +65,8 @@ namespace Browser
         public UserInfo GetUserInfo(string name)
         {
             browser.Navigate("http://weibo.com/" + name + "/info");
-
-            Thread.Sleep(2000);
+            int failCount = 0;
+            Thread.Sleep(6000);
             UserInfo userInfo = new UserInfo();
 
             while (!(bool)
@@ -80,6 +80,13 @@ namespace Browser
                 {
                     tbLog.Text += "Try again" + "\r\n";
                 }));
+
+                failCount++;
+                if (failCount == 6)
+                {
+                    browser.Invoke((Action)(() => { browser.Navigate("http://weibo.com/" + name + "/info"); }));
+                    failCount = 0;
+                }
                 Thread.Sleep(2000);
             }
             cleanMemory();
@@ -97,122 +104,182 @@ namespace Browser
             {
                 return false;
             }
-            var levelNode = (from HtmlElement el in doc.GetElementsByTagName("span") where el.GetAttribute("className").Contains("W_level_ico") select el);
-            var userNickNameTest = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "昵称" select el);
-            if (levelNode.Count() == 0 || userNickNameTest.Count() == 0)
+
+            if (doc.Body.InnerHtml.Contains("http://img.t.sinajs.cn/t4/appstyle/e_media/images/index/busiBtn.png"))
             {
-                return false;
-            }
-            int level = Convert.ToInt32(
-                levelNode.First().Children[0].GetAttribute("title").Substring("当前等级：".Length)
-            );
-
-            var uidNode = (from HtmlElement el in doc.GetElementsByTagName("a") where el.GetAttribute("suda-data") == "key=tblog_grade_float&value=grade_icon_click" select el).First();
-            string uid = uidNode.GetAttribute("href").Substring("http://level.account.weibo.com/u/?id=".Length, 10);
-
-            int credit = 0;
-
-            try
-            {
-                var creditList = (from HtmlElement node in doc.GetElementsByTagName("table") where node.GetAttribute("node-type") == "credit" select node).Single().GetElementsByTagName("tr");
-                foreach (HtmlElement rec in creditList)
+                var levelNode = (from HtmlElement el in doc.GetElementsByTagName("span") where el.GetAttribute("className").Contains("W_level_ico") select el);
+                var userNickNameTest = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "username" select el);
+                if (levelNode.Count() == 0 || userNickNameTest.Count() == 0)
                 {
-                    DateTime time = Convert.ToDateTime(rec.Children[0].InnerText);
-                    string reason = rec.Children[1].InnerText;
-                    int cur_credit = Convert.ToInt32(
-                            rec.Children[2].InnerText.Substring(
-                                0, rec.Children[2].InnerText.Length - 1
-                            )
-                        );
-                    if (cur_credit < 0)
-                        credit += cur_credit;
+                    return false;
                 }
+                int level = Convert.ToInt32(
+                    levelNode.First().Children[0].GetAttribute("title").Substring("当前等级：".Length)
+                );
+                string userNickName = userNickNameTest.First().Children[0].Children[0].InnerText;
+                int credit = 0;
+                var followNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.NextSibling.InnerText == "关注" select el).First();
+                int follow = Convert.ToInt32(
+                        followNode.InnerText
+                    );
+
+                var fansNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.NextSibling.InnerText == "粉丝" select el).First();
+                int fans = Convert.ToInt32(
+                                   fansNode.InnerText
+                               );
+
+                var weiboNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.NextSibling.InnerText == "微博" select el).First();
+                int weibo = Convert.ToInt32(
+                                   weiboNode.InnerText
+                               );
+                bool verified = true;
+                bool userSex = true;
+                string userIntro = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "moreinfo" select el).First().Children[0].Children[0].InnerText;
+                string userLoc = "北京";
+                var uidNode = (from HtmlElement el in doc.GetElementsByTagName("a") where el.GetAttribute("suda-data") == "key=tblog_grade_float&value=grade_icon_click" select el).First();
+                string uid = uidNode.GetAttribute("href").Substring("http://level.account.weibo.com/u/?id=".Length, 10);
+
+                userInfo.Uid = uid;
+                userInfo.Level = level;
+                userInfo.Intro = userIntro;
+                userInfo.IsVerified = verified;
+                userInfo.Location = userLoc;
+                userInfo.NickName = userNickName;
+                userInfo.Sex = userSex;
+                userInfo.WeiboNum = weibo;
+                userInfo.FanNum = fans;
+                userInfo.FollowNum = follow;
+                userInfo.Credit = credit;
+
+                string log = userInfo.ToString();
+
+                tbLog.Invoke((Action)(() =>
+                {
+                    tbLog.Text += log + "\n";
+                }));
+
+                return true;
             }
-            catch (Exception ex)
+            else
             {
-
-            }
-
-
-            var followNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.GetAttribute("node-type") == "follow" select el).First();
-            int follow = Convert.ToInt32(
-                    followNode.InnerText
+                var levelNode = (from HtmlElement el in doc.GetElementsByTagName("span") where el.GetAttribute("className").Contains("W_level_ico") select el);
+                var userNickNameTest = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "昵称" select el);
+                if (levelNode.Count() == 0 || userNickNameTest.Count() == 0)
+                {
+                    return false;
+                }
+                int level = Convert.ToInt32(
+                    levelNode.First().Children[0].GetAttribute("title").Substring("当前等级：".Length)
                 );
 
-            var fansNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.GetAttribute("node-type") == "fans" select el).First();
-            int fans = Convert.ToInt32(
-                               fansNode.InnerText
-                           );
+                var uidNode = (from HtmlElement el in doc.GetElementsByTagName("a") where el.GetAttribute("suda-data") == "key=tblog_grade_float&value=grade_icon_click" select el).First();
+                string uid = uidNode.GetAttribute("href").Substring("http://level.account.weibo.com/u/?id=".Length, 10);
 
-            var weiboNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.GetAttribute("node-type") == "weibo" select el).First();
-            int weibo = Convert.ToInt32(
-                               weiboNode.InnerText
-                           );
+                int credit = 0;
 
-            bool verified = (from HtmlElement el in doc.GetElementsByTagName("div")
-                             where el.GetAttribute("className") == "icon_bed"
-                                 && el.Children[0].GetAttribute("href") == "http://verified.weibo.com/verify"
-                             select el
-                             ).Count() == 1;
+                try
+                {
+                    var creditList = (from HtmlElement node in doc.GetElementsByTagName("table") where node.GetAttribute("node-type") == "credit" select node).Single().GetElementsByTagName("tr");
+                    foreach (HtmlElement rec in creditList)
+                    {
+                        DateTime time = Convert.ToDateTime(rec.Children[0].InnerText);
+                        string reason = rec.Children[1].InnerText;
+                        int cur_credit = Convert.ToInt32(
+                                rec.Children[2].InnerText.Substring(
+                                    0, rec.Children[2].InnerText.Length - 1
+                                )
+                            );
+                        if (cur_credit < 0)
+                            credit += cur_credit;
+                    }
+                }
+                catch (Exception ex)
+                {
 
-            string headPicUrl = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "pf_head_pic" select el).
-                First().
-                Children[0].GetAttribute("src");
+                }
 
-            string userNickName=null, userLoc = null, userIntro=null;
-            bool userSex=true;
 
-            try
-            {
-                userNickName = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "昵称" select el).First().NextSibling.InnerText;
+                var followNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.GetAttribute("node-type") == "follow" select el).First();
+                int follow = Convert.ToInt32(
+                        followNode.InnerText
+                    );
+
+                var fansNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.GetAttribute("node-type") == "fans" select el).First();
+                int fans = Convert.ToInt32(
+                                   fansNode.InnerText
+                               );
+
+                var weiboNode = (from HtmlElement el in doc.GetElementsByTagName("strong") where el.GetAttribute("node-type") == "weibo" select el).First();
+                int weibo = Convert.ToInt32(
+                                   weiboNode.InnerText
+                               );
+
+                bool verified = (from HtmlElement el in doc.GetElementsByTagName("div")
+                                 where el.GetAttribute("className") == "icon_bed"
+                                     && el.Children[0].GetAttribute("href") == "http://verified.weibo.com/verify"
+                                 select el
+                                 ).Count() == 1;
+
+                string headPicUrl = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "pf_head_pic" select el).
+                    First().
+                    Children[0].GetAttribute("src");
+
+                string userNickName = null, userLoc = null, userIntro = null;
+                bool userSex = true;
+
+                try
+                {
+                    userNickName = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "昵称" select el).First().NextSibling.InnerText;
+                }
+                catch (Exception ex)
+                {
+                }
+                try
+                {
+                    userLoc = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "所在地" select el).First().NextSibling.InnerText;
+                }
+                catch (Exception ex)
+                {
+                }
+                try
+                {
+                    userSex = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "性别" select el).First().NextSibling.InnerText == "男";
+                }
+                catch (Exception ex)
+                {
+                }
+                try
+                {
+                    userIntro = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "简介" select el).First().NextSibling.InnerText;
+                }
+                catch (Exception ex)
+                {
+                }
+
+                //string data = String.Format("{0}|{1}|{2}|{3}|{4}|{5}", fans, weibo, credit, userLoc, level, verified ? 1 : 0);
+
+                userInfo.Uid = uid;
+                userInfo.Level = level;
+                userInfo.Intro = userIntro;
+                userInfo.IsVerified = verified;
+                userInfo.Location = userLoc;
+                userInfo.NickName = userNickName;
+                userInfo.Sex = userSex;
+                userInfo.WeiboNum = weibo;
+                userInfo.FanNum = fans;
+                userInfo.FollowNum = follow;
+                userInfo.Credit = credit;
+
+                string log = userInfo.ToString();
+
+                tbLog.Invoke((Action)(() =>
+                {
+                    tbLog.Text += log + "\n";
+                }));
+
+                return true;
             }
-            catch (Exception ex)
-            {
-            }
-            try
-            {
-                userLoc = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "所在地" select el).First().NextSibling.InnerText;
-            }
-            catch (Exception ex)
-            {
-            }
-            try
-            {
-                userSex = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "性别" select el).First().NextSibling.InnerText == "男";
-            }
-            catch (Exception ex)
-            {
-            }
-            try
-            {
-                userIntro = (from HtmlElement el in doc.GetElementsByTagName("div") where el.GetAttribute("className") == "label S_txt2" && el.InnerText == "简介" select el).First().NextSibling.InnerText;
-            }
-            catch (Exception ex)
-            {
-            }
-
-            //string data = String.Format("{0}|{1}|{2}|{3}|{4}|{5}", fans, weibo, credit, userLoc, level, verified ? 1 : 0);
-
-            userInfo.Uid = uid;
-            userInfo.Level = level;
-            userInfo.Intro = userIntro;
-            userInfo.IsVerified = verified;
-            userInfo.Location = userLoc;
-            userInfo.NickName = userNickName;
-            userInfo.Sex = userSex;
-            userInfo.WeiboNum = weibo;
-            userInfo.FanNum = fans;
-            userInfo.FollowNum = follow;
-            userInfo.Credit = credit;
-
-            string log = userInfo.ToString();
-
-            tbLog.Invoke((Action)(() =>
-            {
-                tbLog.Text += log + "\n";
-            }));
-
-            return true;
+            
         }
 
         void cleanMemory()

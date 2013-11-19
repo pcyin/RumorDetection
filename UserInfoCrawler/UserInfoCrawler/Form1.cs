@@ -33,7 +33,7 @@ namespace Browser
         private void Form1_Load(object sender, EventArgs e)
         {
             browser.ScriptErrorsSuppressed = true;
-            browser.Navigate("http://www.weibo.com");
+            browser.Navigate("http://www.weibo.com/");
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -56,6 +56,10 @@ namespace Browser
                 try
                 {
                     host.Open();
+                    tbLog.Invoke((Action)(() =>
+                    {
+                        tbLog.Text += "Service Listening started..\n";
+                    }));
                 }
                 catch (ThreadAbortException ex)
                 {

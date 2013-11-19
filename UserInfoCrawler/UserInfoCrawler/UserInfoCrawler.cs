@@ -50,7 +50,7 @@ namespace Browser
                 return;
             }*/
 
-                paraList.Add(new SqlParameter("@uid", uid));
+            paraList.Add(new SqlParameter("@uid", uid));
             try
             {
                 var creditList = (from HtmlElement node in doc.GetElementsByTagName("table") where node.GetAttribute("node-type") == "credit" select node).Single().GetElementsByTagName("tr");

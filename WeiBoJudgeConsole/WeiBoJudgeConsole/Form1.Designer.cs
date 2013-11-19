@@ -36,9 +36,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(335, 25);
+            this.button1.Location = new System.Drawing.Point(335, 27);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(127, 23);
+            this.button1.Size = new System.Drawing.Size(127, 25);
             this.button1.TabIndex = 0;
             this.button1.Text = "获取向量与相关新闻";
             this.button1.UseVisualStyleBackColor = true;
@@ -46,32 +46,33 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(26, 25);
+            this.textBox1.Location = new System.Drawing.Point(26, 27);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(295, 21);
+            this.textBox1.Size = new System.Drawing.Size(295, 20);
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "http://weibo.com/1188552450/zE4R89EXf";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // news
             // 
-            this.news.Location = new System.Drawing.Point(23, 80);
+            this.news.Location = new System.Drawing.Point(23, 87);
             this.news.Name = "news";
-            this.news.Size = new System.Drawing.Size(439, 226);
+            this.news.Size = new System.Drawing.Size(439, 245);
             this.news.TabIndex = 2;
             this.news.Text = "";
             // 
             // vector
             // 
-            this.vector.Location = new System.Drawing.Point(23, 53);
+            this.vector.Location = new System.Drawing.Point(23, 57);
             this.vector.Name = "vector";
-            this.vector.Size = new System.Drawing.Size(439, 21);
+            this.vector.Size = new System.Drawing.Size(439, 20);
             this.vector.TabIndex = 3;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 318);
+            this.ClientSize = new System.Drawing.Size(484, 345);
             this.Controls.Add(this.vector);
             this.Controls.Add(this.news);
             this.Controls.Add(this.textBox1);

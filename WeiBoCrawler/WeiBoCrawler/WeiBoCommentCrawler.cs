@@ -78,7 +78,7 @@ namespace WeiBoCrawler
                         Console.WriteLine(String.Format("Url:{0} PageId:{1}", job.Url, pageId));
 
                     }
-                    System.Threading.Thread.Sleep(3500 + rnd.Next(5000));
+                    System.Threading.Thread.Sleep(1000 + rnd.Next(1000));
                 }
 
             }

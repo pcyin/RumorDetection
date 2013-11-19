@@ -88,6 +88,7 @@
   <ItemGroup>
     <Content Include="Detect.ashx" />
     <Content Include="Result.ashx" />
+    <None Include="Properties\PublishProfiles\AntiRumorSite.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
